@@ -9,6 +9,9 @@ class Hangman
   def initialize(dictionary)
     @dictionary = dictionary
     @secret_term = dictionary.sample
+    @lives_left = 7
+    @guessed_terms = []
+    @guessing_platform = []
     puts @secret_term
   end
 
@@ -19,25 +22,22 @@ class Hangman
   end
 
   def term_display
-    guessing_platform = []
     @secret_term.length.times do
-      guessing_platform << '_'
+      @guessing_platform << '___'
     end
-    puts guessing_platform.join(' ').inspect
-    insert_dashes
+    puts @guessing_platform.join(' ')
+    insert_stars
   end
 
   def status_display
-    guessed_terms = []
-    lives_left = 7
-    puts "You Have #{lives_left} Lives Left!"
-    puts "Guessed:#{guessed_terms}"
-    insert_dashes
+    puts "You Have #{@lives_left} Lives Left!"
+    puts "Guessed:#{@guessed_terms}"
+    insert_stars
   end
 
-  def insert_dashes
-    puts '-------------------------------------------'
-    puts '-------------------------------------------'
+  def insert_stars
+    puts '*******************************************'
+    puts '*******************************************'
   end
 end
 
