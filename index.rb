@@ -53,11 +53,11 @@ class Hangman
     puts '**********************HANGMAN************************'
     puts '*****************************************************'
     puts 'Press Y if you want to play on a previous save!'
-    yes = gets.chomp.upcase
-    yes == 'Y' ? load_game('save.yml') : nil
     @secret_term.length.times do
       @guessing_platform << '___'
     end
+    yes = gets.chomp.upcase
+    yes == 'Y' ? load_game('save.yml') : nil
   end
 
   # User Prompt Methods
