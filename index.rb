@@ -17,10 +17,11 @@ class Hangman
 
   def game
     intro_dialogue
-    until @lives_left == 5 || @guessing_platform == @secret_term
+    until @lives_left.zero? || @guessing_platform == @secret_term
       display
       user_prompt
     end
+    game_outcome
   end
 
   # Display Methods
@@ -78,6 +79,20 @@ class Hangman
     until guess.length == 1 && guess.match?(/^[a-zA-Z]+$/) && @guessed_letters.include?(guess) == false
       puts 'Enter a letter A-Z!'
       guess = gets.chomp.upcase
+    end
+  end
+
+  # End Result Method
+  def game_outcome
+    p @guessing_platform.join('')
+    if @lives_left.zero?
+      puts '*****************************************************'
+      puts '**********************LOSER*************************'
+      puts '*****************************************************'
+    elsif @guessing_platform == @secret_term
+      puts '*****************************************************'
+      puts '******************CONGRATULATIONS********************'
+      puts '*****************************************************'
     end
   end
 end
