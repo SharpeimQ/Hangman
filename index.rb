@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'yaml'
 
 dictionary = File.open('google-10000-english-no-swears.txt')
@@ -13,7 +14,6 @@ class Hangman
     @lives_left = 7
     @guessed_letters = []
     @guessing_platform = []
-    puts @secret_term.inspect
   end
 
   def game
@@ -21,6 +21,7 @@ class Hangman
     until @lives_left.zero? || @guessing_platform == @secret_term
       display
       user_prompt
+      save_request
     end
     game_outcome
   end
@@ -51,6 +52,9 @@ class Hangman
     puts '*****************************************************'
     puts '**********************HANGMAN************************'
     puts '*****************************************************'
+    puts 'Press Y if you want to play on a previous save!'
+    yes = gets.chomp.upcase
+    yes == 'Y' ? load_game('save.yml') : nil
     @secret_term.length.times do
       @guessing_platform << '___'
     end
@@ -97,9 +101,40 @@ class Hangman
       puts '*****************************************************'
     end
   end
+
+  # Save File Methods
+  def save_request
+    valid_choices = %w[Y N]
+    puts 'Do you want to save your game? (Y/N)'
+    yes_no = gets.chomp.upcase
+    until valid_choices.include?(yes_no)
+      puts 'Do you want to save your game? (Y/N)'
+      yes_no = gets.chomp.upcase
+    end
+    yes_no == 'Y' ? save_game('save.yml') : nil
+  end
+
+  def save_game(filename)
+    data = {
+      secret_term: @secret_term,
+      lives_left: @lives_left,
+      guessed_letters: @guessed_letters,
+      guessing_platform: @guessing_platform
+    }
+    File.write(filename, YAML.dump(data))
+  end
+
+  def load_game(filename)
+    if File.exist?(filename)
+      saved_data = YAML.load_file(filename)
+      @secret_term = saved_data[:secret_term]
+      @lives_left = saved_data[:lives_left]
+      @guessed_letters = saved_data[:guessed_letters]
+      @guessing_platform = saved_data[:guessing_platform]
+    else
+      puts 'No Current Saves'
+    end
+  end
 end
 
-gamer = Hangman.new(dictionary).game
-saved_state = File.write('save.yml', YAML.dump(gamer))
-
-puts saved_state
+Hangman.new(dictionary).game
