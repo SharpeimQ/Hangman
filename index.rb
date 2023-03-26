@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'yaml'
 
 dictionary = File.open('google-10000-english-no-swears.txt')
 dictionary = dictionary.read.split.select { |word| word.length.between?(5, 12) }
@@ -59,7 +60,7 @@ class Hangman
   def user_prompt
     puts 'Enter a letter A-Z!'
     guess = gets.chomp.upcase
-    promp_check(guess)
+    guess = prompt_check(guess)
     resulting(guess)
   end
 
@@ -75,11 +76,12 @@ class Hangman
     end
   end
 
-  def promp_check(guess)
+  def prompt_check(guess)
     until guess.length == 1 && guess.match?(/^[a-zA-Z]+$/) && @guessed_letters.include?(guess) == false
       puts 'Enter a letter A-Z!'
       guess = gets.chomp.upcase
     end
+    guess
   end
 
   # End Result Method
@@ -97,4 +99,7 @@ class Hangman
   end
 end
 
-Hangman.new(dictionary).game
+gamer = Hangman.new(dictionary).game
+saved_state = File.write('save.yml', YAML.dump(gamer))
+
+puts saved_state
